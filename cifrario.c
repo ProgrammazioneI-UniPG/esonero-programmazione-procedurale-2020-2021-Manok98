@@ -1,7 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
-typedef short int si
+typedef short int si;
+
+//Prototypes:
+void MenuPrincipale(si);
 
 int main(){
    char stringaDecifrata[128];
@@ -17,17 +20,17 @@ void MenuPrincipale(si strLength){
    si sceltaMenu = 0;
    printf("\n[0]Esci dal programma\n");
    printf("[1]Inserimento chiave personalizzata\n");
-   printf("[2]Generazione chiave casuale\n")
+   printf("[2]Generazione chiave casuale\n");
    printf("\nSelezionare una delle seguenti opzioni: ");
    do {
-      scanf("%d", &sceltaMenu);
-   }while(sceltaMenu != 0 && scletaMenu != 1 && sceltaMenu != 2);
+      scanf("%hd", &sceltaMenu);
+   }while(sceltaMenu != 0 && sceltaMenu != 1 && sceltaMenu != 2);
 
    switch(sceltaMenu){
       case 0:  //Uscita dal programma
       break; /*FIXME: PROGRAM MUST BE CLOSED: ADD EXIT(0); LIBRARY*/
       case 1:  //Inserimento chiave dall'utente
-      printf("Si inserisca la chiave di almeno %d caratteri", strLength);
+      printf("Si inserisca la chiave di almeno %d caratteri", strLength);//ToFinish
       break;
       case 2:  //Generatore chiave casuale
       break;
