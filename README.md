@@ -9,7 +9,7 @@
 -N°Matricola: 329636
 
 
-Please open this file with Github Markdown syntax!
+Please open this file with Github Markdown syntax!       
 SourceCode File: On "Debug"(Master) branch the source file is _"cifrario.c"_;      
 Executable Program: _RC4-Encrypter_;     
 
