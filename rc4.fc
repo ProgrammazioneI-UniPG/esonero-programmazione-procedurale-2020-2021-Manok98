@@ -13,6 +13,8 @@
    >"matchCounter", privacy, private(for_loop, *Crypt), type: short-int;
    >"sceltaNonValida", privacy: public(used to verify some incorrect inputs), type: short-int;
    >"confirm", privacy: private (*Decrypt), type: char;
+   >"ultimaStringa", privacy: private(*LastString, mostra l'ultima stringa decriptata), type: char_array[128];
+   >"lunghezzaChiave", privacy: private(*Crypt), type: short-int;
 #->Author: @Manok98
 
 +\Avvio del programma
@@ -41,8 +43,13 @@
 +\Decrypt
    >> E' stata criptata una stringa ? Procedi con la decriptazione : Avvio *MenuPrincipale
          '--->Messaggio di conferma <msg>Si vuole procedere con la decriptazione di <var>stringaCifrata</var>\nmediante la chiave<var>chiave</var></msg>;    >> True ? Procedi : Avvio *MenuPrincipale
+         '--->Pulisci stringDecrypt;
          '--->Avvio della decriptazione/*\
               -*-Operatore XoR bit a bit con ciclo for-*-
          '--->-*-Salvataggio nella variabile <var>stringaDecifrata</var>;
          '--->Visualizzazione della stringa decifrata;
+         '--->Salvala in <var>ultimaStringa</var>;
          '--->Ritorna al *MenuPrincipale;
++\LastString
+         '--->Mostra l'ultima stringa decriptata salvata il <var>ultimaStringa</var>;
+         '--->Torna al menu principale appena si preme invio;
