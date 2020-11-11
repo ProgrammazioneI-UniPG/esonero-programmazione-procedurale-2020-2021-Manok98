@@ -6,7 +6,7 @@
 
 -Cognome: Manoni
 
--N°Matricola: 329636
+-N°Matricola: `329636`
 
 
 Please open this file with Github Markdown syntax!       
@@ -20,6 +20,8 @@ _Source code notes:_
                  *MenuPrincipale(stringaDecifrataLength);   //Auto-Call per chiedere nuovamente l'inserimento di una opzione valida*
 
 Tuttavia, a causa della inusuale auto chiamata della funzione con parametro inizialmente proveniente dall'esterno, si è deciso di
- provvedere come nell'ultima versione del codice.
+ provvedere come nell'ultima versione del codice.  
+
+2)Il file `rc4.fc` contiene il diagramma di flusso del programma. 
 
 #END of ReadMe file#
