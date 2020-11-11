@@ -1,0 +1,48 @@
+#!FlowChart/diagram.fc
+#->InitialFluxDiagram;
+#->VARs:
+   >"stringaInserita", privacy: private(*Crypt), type: char_array[128];
+   >"stringaCifrata", privacy: public, type: char_array[128];
+   >"chiave", privacy: public, type: char_array[128];
+   >"stringaDecifrata", privacy: private(*Decrypt), type: char_array[128];
+   >"sceltaMenus", privacy: public, type: short-int;
+   >"i", privacy: private(for_loop), type short-int;
+   >"status", privacy: public, type: enum, values: 0 = Crypting : 1 = Decrypting : 2 = Free;
+   >"trash", privacy: public, type: int;
+   >"escapeSequence", privacy: private(for_loop, *Crypt), type: char_array[10];
+   >"matchCounter", privacy, private(for_loop, *Crypt), type: short-int;
+   >"sceltaNonValida", privacy: public(used to verify some incorrect inputs), type: short-int;
+   >"confirm", privacy: private (*Decrypt), type: char;
+#->Author: @Manok98
+
++\Avvio del programma
+   '--->Pulizia del terminale;
+   '--->Messaggio iniziale;
+   '--->Inizializzazione delle variabili;
+   '--->Avvio del *MenuPrincipale;
++\MenuPrincipale
+   '--->Messaggio del menu principale;
+   '--->Selezione delle opzioni
+         '--->[0]Uscita dal programma;    >> 0 ? Uscita con status 0 : NULL
+         '--->[1]Cripta una stringa;      >> 1 ? Avvio *Crypt : NULL
+         '--->[2]Decripta una stringa;    >> 2 ? Avvio *Decrypt : NULL
++\Crypt
+   >> Si è già avviata un'altra criptazione ? Sovrascrizione dati precedenti : Avvio *MenuPrincipale
+         '--->Inserimento stringa;
+         '--->Scelta della chiave;
+               '--->[0]MenuPrincipale;       >> 0 ? Avvio *MenuPrincipale : NULL
+               '--->[1]Inserimento manuale;  >> 1 ? Inserimento della chiave : NULL
+               '--->[2]Generazione casuale;  >> 2 ? Generazione della chiave : NULL
+         '--->Avvio della crittazione/*\
+              -*-Operatore XoR bit a bit con ciclo for-*-
+         '--->-*-Salvataggio nella variabile <var>stringaCifrata</var>;
+         '--->Visualizzazione della stringa cifrata;
+         '--->Ritorna al *MenuPrincipale;
++\Decrypt
+   >> E' stata criptata una stringa ? Procedi con la decriptazione : Avvio *MenuPrincipale
+         '--->Messaggio di conferma <msg>Si vuole procedere con la decriptazione di <var>stringaCifrata</var>\nmediante la chiave<var>chiave</var></msg>;    >> True ? Procedi : Avvio *MenuPrincipale
+         '--->Avvio della decriptazione/*\
+              -*-Operatore XoR bit a bit con ciclo for-*-
+         '--->-*-Salvataggio nella variabile <var>stringaDecifrata</var>;
+         '--->Visualizzazione della stringa decifrata;
+         '--->Ritorna al *MenuPrincipale;
