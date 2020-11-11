@@ -104,6 +104,7 @@ void MenuPrincipale(int caller){
 void Crypt(){
    //Private variables:
    ch stringaInserita[129];
+   si coincidenzaChiave = 0; //Usata nell'inserimento manuale della chiave
 
    if(actualStatus == 0){        /*Free*/
       //Si procede normalmente, il programma è al primo ciclo di crittazione
@@ -114,6 +115,7 @@ void Crypt(){
    }else{         /*Decrypting*/
       printf("\aE' stata appena decriptata una stringa;\n");
       printf("Continuando, i precendenti dati verranno sovrascritti.\n");
+      actualStatus = Free;
    }//Fine dell'if
 
    /*Inserimento della stringa*/
@@ -127,6 +129,7 @@ void Crypt(){
    if(stringaInserita[127] != '\n' && stringaInserita[127] != '\0'){   //Avendo pulito il vettore prima di acquisire, ora sappiamo che sull'ultima cella acquisita (127) ci deve essere \0 o al più \n
       while((trash = getchar()) != '\n' && trash != EOF);      //L'utente ha messo più di 128 caratteri: dobbiamo pulire tutto ciò che è in più!
       troppoLunga = 1; //Avvisa che la chiave deve essere di 128
+      printf("\n"); //La stringa era lunga al massimo, meglio avere un altro a capo per migliorare la vista
    }else if(stringaInserita[0] == '\n'){
       printf("\a\033[1;31mStringa troppo breve\033[0m!\n");
       Crypt(); //Reinserimento della stringa
@@ -190,8 +193,26 @@ void Crypt(){
             while((trash = getchar()) != '\n' && trash != EOF);   //Pulisce i caratteri in più
          }
          printf("\033[0m");
-         strlen(chiave) < strlen(stringaInserita) ? printf("\a\n\033[1;31mLa chiave inserita è troppo corta\033[0m;\n") : printf("La chiave è \033[1;36m%s\033[0m\n", chiave);
-         }while(strlen(chiave) < strlen(stringaInserita));  //Fine del controllo della chiave
+
+         /*Verifica se la chiave coincide con la stringa*/
+         coincidenzaChiave = strlen(stringaInserita);
+         for(si i = 0; i < strlen(chiave) + 1; i++) {    //Verifichiamo che le stringhe non siano uguali!
+               if(chiave[i] == stringaInserita[i]){
+                  coincidenzaChiave--;
+               }
+         }//Fine del for per confrontare chiave e stringa
+
+         if(strlen(chiave) < strlen(stringaInserita)){
+             printf("\a\n\033[1;31mLa chiave inserita è troppo corta\033[0m;\n");
+         }else if(coincidenzaChiave == 0 && strlen(chiave) > strlen(stringaInserita)){
+               printf("\a\n\033[1;31mLa chiave non può contenere la stringa\033[0m!\n"); //Ripeti il do-while perchè la chiave non va bene
+         }else if (coincidenzaChiave < 0){
+               printf("\a\n\033[1;31mLa chiave e la stringa non possono coincidere\033[0m!\n"); //Ripeti il do-while perchè la chiave non va bene
+         }else{
+            printf("La chiave è \033[1;36m%s\033[0m\n", chiave);
+         }//Fine dell'if per stampare la frase
+      }while(strlen(chiave) < strlen(stringaInserita) || coincidenzaChiave == 0 || coincidenzaChiave < 0);  //Fine del controllo della chiave
+
          printf("\a\033[1;31mAttenzione\033[0m: essendo stata inserita manualmente la chiave, la\nstringa cifrata potrebbe contenere molti caratteri insoliti.\n");
          sleep(2);
          break;
@@ -354,7 +375,7 @@ void LastString(){
             break;
       }
    }
-   printf("\n\n\033[0mPremere Invio per tornare al menu. ");
+   printf("\n\n\033[1;32mPremere Invio per tornare al menu\033[0m. ");
    fgets(choice, 3, stdin);
    if(choice[0] == '\n'){
       MenuPrincipale(1);
