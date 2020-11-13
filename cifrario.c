@@ -64,10 +64,10 @@ void MenuPrincipale(int caller){
    }
    else if(antiBug < 48 || antiBug > 57)   //I numeri in ascii vanno da 48 a 57, quindi questa condizione equivale a "Se l'utente non inserisce un numero"
    {
-      printf("\a\033[1;31mData la scelta non valida, si procede \nautomaticamente con l'opzione 1\033[0m.\n");
+      printf("\a\033[1;31mPer favore, inserisci una scelta valida\033[0m!\n");
       sleep(2);
-      sceltaMenus = 1;
       while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+      MenuPrincipale(1);
    }else{
       sceltaMenus = (si)antiBug - 48;
       while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
@@ -145,10 +145,9 @@ void Crypt(){
    printf("\033[0m");
 
    /*Verifica presenza escape-code to mainMenu*/
-   //WARNING: TO FIX
-   char escapeSequence[] = "backToMain";
+   char escapeSequence[11] = "backToMain";
    si matchCounter = 0;       //Conta le corrispondenze nel for di seguito
-   if(strlen(stringaInserita)  < 11){ //Se ha più di 10 caratteri (e un \n) sicuramente non è l'scape code
+   if(strlen(stringaInserita)  == 11){ //Facciamo il confronto solo se c'è la possibilità che le stringhe siano uguali
       for(int i = 0; i < 10; i++){
          if(escapeSequence[i] == stringaInserita[i])
              matchCounter++;
@@ -157,7 +156,7 @@ void Crypt(){
          }
       }
    }//Fine if per confronto escapeSequence
-   if(matchCounter == 10){    //Se e solo se sono 10
+   if(matchCounter == 10){
       MenuPrincipale(1);
    }else{
       lunghezzaStringaInserita = strlen(stringaInserita);
@@ -263,9 +262,13 @@ void Crypt(){
       }//Fine del for per la criptazione
       sleep(2);      //Pausa ad effetto
       //WARNING: TOADD:STRINGFILTER AS IN SETTINGS!
-      printf("\n\a>>La stringa è stata criptata: \n\033[1;36m");     //Si va a capo perchè se venisse generato il carattere backspace, la stringa criptata coprirebbe il testo.
+      printf("\n\a>>La stringa è stata criptata: \n");     //Si va a capo perchè se venisse generato il carattere backspace, la stringa criptata coprirebbe il testo.
       for(si i = 0; i < strlen(stringaInserita); i++){
-         printf("%c", stringaCifrata[i]);
+         if(filtroStringheCifrate == 1 && stringaCifrata[i] <= 31){
+            printf("\033[0;34m?%d", stringaCifrata[i]);
+         }else{
+            printf("\033[1;36m%c", stringaCifrata[i]);
+         }
       }
       printf("\033[0m\n");
       /*Salvataggio della stringa cifrata*/
@@ -360,11 +363,12 @@ void LastString(){
    if(storico[0] == '\0'){
       printf("\033[1;31mNessun dato ancora\033[0m!");
    }else{
-      for(si i = 0; i < 128; i++){
-         if(storico[i] != '0')
-            printf("%c", storico[i]);
-         else
-            break;
+      for(si i = 0; i < lunghezzaStringaInserita; i++){
+            if(filtroStringheCifrate == 1 && storico[i] <= 31){
+               printf("\033[0;34m?%d", storico[i]);
+            }else{
+               printf("\033[1;36m%c", storico[i]);
+            }
       }
    }
    printf("\n\033[0mUltima chiave usata: \n\t\033[1;36m");
@@ -373,7 +377,7 @@ void LastString(){
       printf("\033[1;31mNessun dato ancora\033[0m!");
    }else{
       for(si i = 128; i < 256; i++){
-         if(storico[i] != '0')
+         if(storico[i] != '\0')
             printf("%c", storico[i]);
          else
             break;
@@ -385,7 +389,7 @@ void LastString(){
       printf("\033[1;31mNessun dato ancora\033[0m!");
    }else{
       for(si i = 256; i < 384; i++){
-         if(storico[i] != '0')
+         if(storico[i] != '\0')
             printf("%c", storico[i]);
          else
             break;
@@ -422,10 +426,20 @@ void Impostazioni(){
       if(choice[0] == '\n' || (choice[0] == '0'  && choice[1] == '\n')){  /*Se digita 0*/
          MenuPrincipale(1);
       }else if(choice[0] == '1' && choice[1] == '\n'){     /*Se digita 1*/
-         filtroStringheCifrate == 0 ? printf("Attivazione "), filtroStringheCifrate = 1 : (printf("Disattivazione "), filtroStringheCifrate = 0);  //Per qualche oscuro motivo senza le tonde non funziona
-         printf("del filtro per le stringhe cifrate. \n");
+         printf("\nQuando attivata, i caratteri ASCII compresi tra 0 e 31 vengono\nsostituiti da \033[0;34m?XX\033[0m, dove al posto delle x appare il numero\nAscii del carattere.\n");
+         sleep(3);
+         filtroStringheCifrate == 0 ? printf("\033[1;32mAttivazione\033[0m "), filtroStringheCifrate = 1 : (printf("\033[1;31mDisattivazione\033[0m "), filtroStringheCifrate = 0);  //Per qualche oscuro motivo senza le tonde non funziona
+         printf("del filtro per le stringhe cifrate completata. \n");
          sleep(1);
-         Impostazioni();
+         printf("\n\033[0;32mPremere invio per continuare. ");
+         fgets(choice, 3, stdin);
+         printf("\033[0m");
+         if(choice[0] != '\n' &&choice[1] != '\0'){
+            while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+            Impostazioni();
+         }else {
+            Impostazioni();
+         }
       }else if(choice[1] != '\n' && choice[1] != '\0'){
          while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
          MenuPrincipale(1);
