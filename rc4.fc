@@ -15,6 +15,7 @@
    >"confirm", privacy: private (*Decrypt), type: char;
    >"ultimaStringa", privacy: private(*LastString, mostra l'ultima stringa decriptata), type: char_array[128];
    >"lunghezzaChiave", privacy: private(*Crypt), type: short-int;
+   >"lunghezzaStringaInserita", prvacy: publlic, type: short-int;
 #->Author: @Manok98
 
 +\Avvio del programma
@@ -53,3 +54,5 @@
 +\LastString
          '--->Mostra l'ultima stringa decriptata salvata il <var>ultimaStringa</var>;
          '--->Torna al menu principale appena si preme invio;
+*\Impostazioni
+         '--->Manipola il comportamento del programma;
