@@ -18,12 +18,15 @@ ch storico[385];     //Una piccola history dell'ultima stringa decifrata. Non pi
 int trash;     //Usata per pulizia del buffer
 si troppoLunga = 0;  //Da usare per il calcolo della lunghezza della stringa in caso di stringa di 128 caratteri
 ch antiBug;
+si lunghezzaStringaInserita;
+si filtroStringheCifrate = 0; //Impostazione modificabile dal relativo menu, 0 = false, 1 = true
 
 //Prototypes:
 void MenuPrincipale(int );
 void Crypt();
 void Decrypt();
 void LastString();
+void Impostazioni();
 
 int main() {
    system("clear");     //Pulizia del terminale per una visione ottimale
@@ -45,6 +48,7 @@ void MenuPrincipale(int caller){
    printf("[\033[1;34m1\033[0m]Cripta una stringa.\n");
    printf("[\033[1;34m2\033[0m]Decripta una stringa.\n");
    printf("[\033[1;34m3\033[0m]Storico delle stringhe.\n");
+   printf("[\033[1;34m4\033[0m]Impostazioni.\n");
 
    /*Nel caso in cui il programma sia già stato eseguito*/
    if(actualStatus == 1)
@@ -85,8 +89,12 @@ void MenuPrincipale(int caller){
       Decrypt();
       break;
 
-      case 3:
+      case 3:     /*Avvia lo storico*/
       LastString();
+      break;
+
+      case 4:     /*Avvia il menu impostazioni*/
+      Impostazioni();
       break;
 
       default:    /*Numero non valido*/
@@ -152,6 +160,7 @@ void Crypt(){
    if(matchCounter == 10){    //Se e solo se sono 10
       MenuPrincipale(1);
    }else{
+      lunghezzaStringaInserita = strlen(stringaInserita);
       printf("La stringa è stata salvata come segue: \033[1;36m%s\033[0m\n", stringaInserita);
       /*Mostra le opzioni*/
       sceltaMenus = 2;        //Se l'utente inserisce lettere, in automatica si opta per la generazione di una chiave casuale
@@ -253,7 +262,12 @@ void Crypt(){
          stringaCifrata[i] = stringaInserita[i] ^ chiave[i];
       }//Fine del for per la criptazione
       sleep(2);      //Pausa ad effetto
-      printf("\n\a>>La stringa è stata criptata: \n\033[1;36m%s\033[0m\n", stringaCifrata);     //Si va a capo perchè se venisse generato il carattere backspace, la stringa criptata coprirebbe il testo.
+      //WARNING: TOADD:STRINGFILTER AS IN SETTINGS!
+      printf("\n\a>>La stringa è stata criptata: \n\033[1;36m");     //Si va a capo perchè se venisse generato il carattere backspace, la stringa criptata coprirebbe il testo.
+      for(si i = 0; i < strlen(stringaInserita); i++){
+         printf("%c", stringaCifrata[i]);
+      }
+      printf("\033[0m\n");
       /*Salvataggio della stringa cifrata*/
       for(si i = 0; i < 128; i++){  //Pulizia
          storico[i] = '\0';
@@ -307,9 +321,11 @@ void Decrypt(){
             for(si i = 0; i < 128; i++){
                stringaDecifrata[i] = '\0';
             }  //Pulisce dalle precedenti stringhe
+
+            /*Processo di decriptazione*/
             printf("Avvio della decriptazione...\n");
             actualStatus = 2;    //Imposta lo stato di decriptazione
-            for(si i = 0; i <= strlen(stringaCifrata); i++){   //Minore e uguale per non escludere l'ultimo carattere della stringa
+            for(si i = 0; i < lunghezzaStringaInserita; i++){
                stringaDecifrata[i] = stringaCifrata[i] ^ chiave[i];
             }
             sleep(2);      //Solita pausa ad effetto
@@ -387,3 +403,34 @@ void LastString(){
       MenuPrincipale(1);
    }
 }//Fine di LastString
+
+void Impostazioni(){
+   //Private variables:
+   ch choice[2] = {'\0', '\0'};
+
+   system("clear");
+   printf("\033[01;33mImpostazioni\033[0m:\n");
+   printf("[0]Torna al menu principale.\n");
+   printf("[");
+   filtroStringheCifrate == 0 ? printf("\033[1;31m1") : printf("\033[1;32m1");
+   printf("\033[0m]Filtro stringhe cifrate.\n");
+   do{
+      printf("\nLa tua scelta[Invio = 0]: ");
+      fgets(choice, 3, stdin);
+
+      /*Gestione inserimento*/
+      if(choice[0] == '\n' || (choice[0] == '0'  && choice[1] == '\n')){  /*Se digita 0*/
+         MenuPrincipale(1);
+      }else if(choice[0] == '1' && choice[1] == '\n'){     /*Se digita 1*/
+         filtroStringheCifrate == 0 ? printf("Attivazione "), filtroStringheCifrate = 1 : (printf("Disattivazione "), filtroStringheCifrate = 0);  //Per qualche oscuro motivo senza le tonde non funziona
+         printf("del filtro per le stringhe cifrate. \n");
+         sleep(1);
+         Impostazioni();
+      }else if(choice[1] != '\n' && choice[1] != '\0'){
+         while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+         MenuPrincipale(1);
+      }
+   }while(choice[1] != '\n' && choice[1] != '\0');
+
+
+}//Fine di impostazioni
