@@ -6,6 +6,7 @@
    >"chiave", privacy: public, type: char_array[128];
    >"stringaDecifrata", privacy: private(*Decrypt), type: char_array[128];
    >"sceltaMenus", privacy: public, type: short-int;
+   >"choice", privacy: public, type: char_array;
    >"i", privacy: private(for_loop), type short-int;
    >"status", privacy: public, type: enum, values: 0 = Crypting : 1 = Decrypting : 2 = Free;
    >"trash", privacy: public, type: int;
