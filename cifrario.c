@@ -16,7 +16,7 @@ ch chiave[129];
 ch storico[385];     //Una piccola history dell'ultima stringa decifrata. Non più di una stringa però: ricordiamoci che stiamo scrivendo nella RAM e non nella memoria interna!
 int trash;     //Usata per pulizia del buffer
 si troppoLunga = 0;  //Da usare per il calcolo della lunghezza della stringa in caso di stringa di 128 caratteri
-ch antiBug;
+ch inserimentoScelta[2];
 si lunghezzaStringaInserita;
 si filtroStringheCifrate = 0; //Impostazione modificabile dal relativo menu, 0 = false, 1 = true
 
@@ -54,22 +54,23 @@ void MenuPrincipale(int caller){
       printf("\n\033[0;32mTrovata stringa criptata\033[0m; digitare \033[1;34m2\033[0m per decriptare.\n");
 
    printf("\nLa tua scelta[Invio = 1]: \033[1;34m");
-   scanf("%c", &antiBug);
+   inserimentoScelta[0] = '\0', inserimentoScelta[1] = '\0';   //Inizializza l'array
+   fgets(inserimentoScelta, 3, stdin);
    printf("\033[0m");      //Ripristina il colore di default
 
    /*Interpretiamo l'inserimento*/
-   if(antiBug == '\n'){
+   if(inserimentoScelta[0] == '\n'){
       sceltaMenus = 1;     //Se l'utente preme invio senza scrivere, viene interpretato come 1
    }
-   else if(antiBug < 48 || antiBug > 57)   //I numeri in ascii vanno da 48 a 57, quindi questa condizione equivale a "Se l'utente non inserisce un numero"
-   {
+   else if((inserimentoScelta[0] >= 48 && inserimentoScelta[0] <= 57) && inserimentoScelta[1] == '\n'){   //I numeri in ascii vanno da 48 a 57, quindi questa condizione equivale a "Se l'utente non inserisce un numero"
+      sceltaMenus = (si)inserimentoScelta[0] - 48;
+   }else{
       printf("\a\033[1;31mPer favore, inserisci una scelta valida\033[0m!\n");
       sleep(2);
-      while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+      if(inserimentoScelta[1] != '\n' && inserimentoScelta[1] != '\0') {
+         while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+      }
       MenuPrincipale(1);
-   }else{
-      sceltaMenus = (si)antiBug - 48;
-      while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
    }//Fine dell'if per controllo
 
    /*Gestisci l'inserimento*/
@@ -164,22 +165,24 @@ void Crypt(){
       printf("[\033[1;34m1\033[0m]Inserisci chiave.\n");
       printf("[\033[1;34m2\033[0m]Genera chiave.\n");
       printf("\nLa tua scelta[Invio = 2]: \033[1;34m");
-      scanf("%c", &antiBug);
+      inserimentoScelta[0] = '\0', inserimentoScelta[1] = '\0';   //Inizializza l'array
+      fgets(inserimentoScelta, 3, stdin);
       printf("\033[0m");      //Ripristina il colore di default
 
       /*Interpretiamo l'inserimento*/
-      if(antiBug == '\n'){
+      if(inserimentoScelta[0] == '\n'){
          sceltaMenus = 2;     //Se l'utente preme invio senza scrivere, viene interpretato come 2
       }
-      else if(antiBug < 48 || antiBug > 57){   //I numeri in ascii vanno da 48 a 57, quindi questa condizione equivale a "Se l'utente non inserisce un numero"
+      else if((inserimentoScelta[0] >= 48 && inserimentoScelta[0] <= 57) && inserimentoScelta[1] == '\n'){   //I numeri in ascii vanno da 48 a 57, quindi questa condizione equivale a "Se l'utente non inserisce un numero"
+         sceltaMenus = (si)inserimentoScelta[0] - 48;
+      }else{
          printf("\a\033[1;31mData la scelta non valida, si procede \nautomaticamente con l'opzione 2\033[0m.\n");
          sleep(2);
          sceltaMenus = 2;
-         while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
-      }else{
-         sceltaMenus = (si)antiBug - 48;
-         while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
-      }//Fine dell'if per controllo
+         if(inserimentoScelta[1] != '\n' && inserimentoScelta[1] != '\0'){
+            while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+         }
+         }//Fine dell'if per controllo
 
       /*Gestisci l'inserimento della scelta della chiave*/
       switch(sceltaMenus){
@@ -312,21 +315,24 @@ void Decrypt(){
       printf("\033[0;32mTrovata stringa criptata\033[0m!\n");
       do{
          printf("Procedere?[S/N] ");
-         scanf("%c", &antiBug);
+         inserimentoScelta[0] = '\0', inserimentoScelta[1] = '\0';   //Inizializza l'array
+         fgets(inserimentoScelta, 3, stdin);
+         printf("\033[0m");      //Ripristina il colore di default
 
          /*Interpretiamo l'inserimento*/
-         if(antiBug == '\n'){
+         if(inserimentoScelta[0] == '\n'){
             confirm = 'S';     //Se l'utente preme invio senza scrivere, viene interpretato come Y
             printf("\a\033[1;31mChi tace acconsente\033[0m.\n");     //Faccio finta che non hai fatto apposta
          }
-         else if(antiBug != 83 && antiBug != 115 && antiBug != 78 && antiBug != 110)
-         {
-            confirm = 'e'; //e = errore, carattere non valido
-            while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+         else if((inserimentoScelta[0] == 83 || inserimentoScelta[0] == 115 || inserimentoScelta[0] == 83 || inserimentoScelta[0] == 115 ) && inserimentoScelta[1] == '\n'){   //I numeri in ascii vanno da 48 a 57, quindi questa condizione equivale a "Se l'utente non inserisce un numero"
+            confirm = (char)inserimentoScelta[0];
          }else{
-            confirm = (char)antiBug;
-            while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+            confirm = 'e'; //e = errore, carattere non valido
+            if(inserimentoScelta[1] != '\n' && inserimentoScelta[1] != '\0'){
+               while((trash = getchar()) != '\n' && trash != EOF); //Il buffer contiene ancora almeno un \n sicuramente: puliamo
+            }
          }//Fine dell'if per controllo
+
          if(confirm == 'S' || confirm == 's'){
             for(si i = 0; i < 128; i++){
                stringaDecifrata[i] = '\0';
