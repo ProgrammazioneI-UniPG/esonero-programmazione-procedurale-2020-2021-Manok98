@@ -22,5 +22,9 @@ _Source code notes:_
    acquisiscono 128 caratteri effettivi che vengono salvati nelle cella da 0 a 127. `E' errore scrivere fgets con 128, perchè non    rispetteremmo la richiesta del testo dell'esonero`, dato che, anziché consentire l'acquisizione di 128 caratteri, ne permetteremo     
    la scrittura di soli 127!     
 
+3)_Perché si possono inserire fino a 127 caratteri effettivi?_
+   Il pulsante enter genera un carattere "\n" che viene anch'esso interpretato come parte della stringa. Pertanto una stringa può   
+   contenere al più 127 caratteri e un \n (in tutto 128).   
    
+
 #END of ReadMe file#
