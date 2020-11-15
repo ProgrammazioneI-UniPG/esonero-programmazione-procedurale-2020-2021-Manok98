@@ -276,7 +276,7 @@ void Crypt(){
       for(si i = 0; i < 128; i++){  //Pulizia
          storico[i] = '\0';
       }
-      for(si i = 0; i < strlen(stringaCifrata); i++){   //Scrittura
+      for(si i = 0; i < lunghezzaStringaInserita; i++){   //Scrittura
          storico[i] = stringaCifrata[i];
       }
       ch choice[2];
